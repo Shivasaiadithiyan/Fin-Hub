@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTiment - Sentiment Analysis</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        :root {
+            --background-color: #121212;
+            --primary-color: #4a90e2;
+            --text-color: #e0e0e0;
+            --input-background-color: rgba(255, 255, 255, 0.1);
+            --button-color: #4a90e2;
+            --button-hover-color: #357abd;
+            --border-radius: 10px;
+        }
+
+        /* Global Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #1e1e2f, #2c3e50);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* Back Button Styling */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 10px 20px;
+            z-index: 10;
+            font-weight: bold;
+        }
+
+        .back-button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            width: 90%;
+            max-width: 800px;
+            height: auto;
+            margin-top: 60px; /* Offset from the fixed back button */
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        form input[type="url"] {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: var(--input-background-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        form input[type="url"]:focus {
+            outline: 2px solid var(--primary-color);
+        }
+
+        form button {
+            padding: 15px;
+            color: white;
+            background-color: var(--button-color);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        form button:hover {
+            background-color: var(--button-hover-color);
+        }
+
+        .result {
+            flex: 1;
+            max-height: calc(100vh - 150px); /* Adjust height dynamically */
+            overflow-y: auto; /* Enables scrolling for the result section */
+        }
+
+        .result h2,
+        .result h3 {
+            margin-top: 20px;
+        }
+
+        .sentiment {
+            font-size: 18px;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .sentiment.positive {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .sentiment.negative {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .sentiment.neutral {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .summary {
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--text-color);
+            margin-top: 10px;
+        }
+
+        /* Dark Scrollbar for the results */
+        .result::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .result::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .result::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        .result::-webkit-scrollbar-thumb:hover {
+            background: var(--button-hover-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Back to Menu Button -->
+    <a href="{% url 'home' %}" class="back-button">Back to Menu</a>
+
+    <div class="container">
+        <h1>FinTiment</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="url" name="url" placeholder="Enter a Mint article URL" required>
+            <button type="submit">Analyze</button>
+        </form>
+
+        {% if title %}
+        <div class="result">
+            <h2 class="article-title">{{ title }}</h2>
+
+            <h3 class="sentiment-title">Sentiment:</h3>
+            <p class="sentiment {{ sentiment|lower }}">{{ sentiment }} (Score: {{ score }})</p>
+
+            <h3 class="summary-title">Summary:</h3>
+            <p class="summary">{{ summary }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
